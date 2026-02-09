@@ -1,8 +1,10 @@
 import sqlite3
 import os
+from pathlib import Path
 
-#Finds the Documets directory and puts it in there
-path = os.path.expanduser("~/Documents/Passwords")
+#Finds the Documents directory and puts it in there
+path = os.path.abspath(os.path.dirname(__file__))
+database = os.path.join(path, "Passwords.db")
 
 #for debugging delete after build
 print("Documents directory is:", path)
