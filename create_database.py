@@ -2,19 +2,19 @@ import sqlite3
 import os
 from pathlib import Path
 
-#Finds the Documents and Passwords directory
-path = os.path.expanduser("~/Documents/Passwords")
-database = os.path.join(path, "Passwords.db")
+#Finds the Documents and Passwords directory. Uncomment for later releases
+#path = os.path.expanduser("~/Documents/Passwords")
+#database = os.path.join(path, "Passwords.db")
 
 #for debugging delete after build
-print("Documents directory is:", path)
+#print("Documents directory is:", path)
 
 #makes sure we don't make the same folder again
-if not os.path.exists(path):
-    os.makedirs(path)
+#if not os.path.exists(path):
+    #os.makedirs(path)
 
 
-with sqlite3.connect(database) as connection: #This stores it in the python directory for now but should be in Documents in later versions
+with sqlite3.connect('Passwords.db') as connection: #This stores it in the python directory for now but should be in Documents/Passwords in the release version
 
       cursor = connection.cursor()
       cursor.execute("DROP TABLE IF EXISTS Passwords")
