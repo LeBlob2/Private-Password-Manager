@@ -11,15 +11,17 @@ from pathlib import Path
 
 #makes sure we don't make the same folder again
 #if not os.path.exists(path):
-    #os.makedirs(path)
+ #   os.makedirs(path)
 
 
 with sqlite3.connect('Passwords.db') as connection: #This stores it in the python directory for now but should be in Documents/Passwords in the release version
+
 
       cursor = connection.cursor()
       cursor.execute("DROP TABLE IF EXISTS Passwords")
       create_table_query = """
       CREATE TABLE Passwords (
+      PRAGMA key 'password'
       id INTEGER PRIMARY KEY, 
       username TEXT NOT NULL,
       email TEXT,
@@ -31,6 +33,7 @@ with sqlite3.connect('Passwords.db') as connection: #This stores it in the pytho
       """
       cursor.execute(create_table_query)
       connection.commit()
+
 
       print("Database and Table made") #For debug only use a message window for the real thing
       
