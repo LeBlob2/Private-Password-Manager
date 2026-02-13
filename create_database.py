@@ -14,14 +14,13 @@ from pathlib import Path
  #   os.makedirs(path)
 
 
-with sqlite3.connect('Passwords.db') as connection: #This stores it in the python directory for now but should be in Documents/Passwords in the release version
+with sqlite3.connect('Password.db') as connection: #This stores it in the python directory for now but should be in Documents/Passwords in the release version
 
 
       cursor = connection.cursor()
       cursor.execute("DROP TABLE IF EXISTS Passwords")
       create_table_query = """
       CREATE TABLE Passwords (
-      PRAGMA key 'password'
       id INTEGER PRIMARY KEY, 
       username TEXT NOT NULL,
       email TEXT,
