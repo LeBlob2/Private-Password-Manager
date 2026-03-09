@@ -1,38 +1,76 @@
 import sqlite3
+import sqlcipher3
 import os
+import hashlib
 from pathlib import Path
 
-#Finds the Documents and Passwords directory. Uncomment for later releases
-#path = os.path.expanduser("~/Documents/Passwords")
-#database = os.path.join(path, "Passwords.db")
+# Path setup
+path = os.path.expanduser("~/Documents/Passwords")
+db_path = os.path.join(path, "test.db")
 
-#for debugging delete after build
-#print("Documents directory is:", path)
+print("Documents directory is:", path)
 
-#makes sure we don't make the same folder again
-#if not os.path.exists(path):
- #   os.makedirs(path)
+if not os.path.exists(path):
+    os.makedirs(path)
 
+def derive_key(password: str, salt: bytes) -> str:
+    key = hashlib.pbkdf2_hmac(
+        'sha256',
+        password.encode('utf-8'),
+        salt,
+        iterations=600000,
+        dklen=32
+    )
+    return key.hex()
 
-with sqlite3.connect('Password.db') as connection: #This stores it in the python directory for now but should be in Documents/Passwords in the release version
+def create_encrypted_database(db_path: str, password: str):
+    salt = os.urandom(32)
+    salt_path = db_path + '.salt'
 
+    with open(salt_path, 'wb') as f:
+        f.write(salt)
 
-      cursor = connection.cursor()
-      cursor.execute("DROP TABLE IF EXISTS Passwords")
-      create_table_query = """
-      CREATE TABLE Passwords (
-      id INTEGER PRIMARY KEY, 
-      username TEXT NOT NULL,
-      email TEXT,
-      password TEXT,
-      phone INTEGER,
-      extra TEXT,
-      extranum INTEGER
-      );
-      """
-      cursor.execute(create_table_query)
-      connection.commit()
+    key = derive_key(password, salt)
 
+    conn = sqlcipher3.connect(db_path)
+    cursor = conn.cursor()
 
-      print("Database and Table made") #For debug only use a message window for the real thing
-      
+    cursor.execute(f"PRAGMA key = \"x'{key}'\";")
+    cursor.execute("PRAGMA cipher_page_size = 4096;")
+    cursor.execute("PRAGMA kdf_iter = 256000;")
+
+    conn.commit()
+    return conn
+
+def open_encrypted_database(db_path: str, password: str):
+    salt_path = db_path + '.salt'
+
+    with open(salt_path, 'rb') as f:
+        salt = f.read()
+
+    key = derive_key(password, salt)
+
+    conn = sqlcipher3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute(f"PRAGMA key = \"x'{key}'\";")
+
+    try:
+        cursor.execute("SELECT count(*) FROM sqlite_master;")
+        return conn
+    except sqlcipher3.DatabaseError:
+        conn.close()
+        raise ValueError("Invalid password")
+
+if __name__ == "__main__":
+    password = input("Enter database password: ")
+
+    if not os.path.exists(db_path):
+        print("Creating new encrypted database...")
+        conn = create_encrypted_database(db_path, password)
+    else:
+        print("Opening existing encrypted database...")
+        conn = open_encrypted_database(db_path, password)
+
+    print("Database ready!")
+    conn.close()
