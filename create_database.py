@@ -23,7 +23,7 @@ def derive_key(password: str, salt: bytes) -> str:
     )
     return key.hex()
 
-def create_encrypted_database(db_path: str, password: str):
+def create_encrypted_database(db_path: str, password: str, table_name: str = "Passwords"):
     salt = os.urandom(32)
     salt_path = db_path + '.salt'
 
@@ -39,21 +39,31 @@ def create_encrypted_database(db_path: str, password: str):
     cursor.execute("PRAGMA cipher_page_size = 4096;")
     cursor.execute("PRAGMA kdf_iter = 256000;")
 
+    cursor.execute(f"""
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
     conn.commit()
     return conn
 
 def open_encrypted_database(db_path: str, password: str):
     salt_path = db_path + '.salt'
-
     with open(salt_path, 'rb') as f:
         salt = f.read()
 
     key = derive_key(password, salt)
-
     conn = sqlcipher3.connect(db_path)
     cursor = conn.cursor()
 
     cursor.execute(f"PRAGMA key = \"x'{key}'\";")
+    cursor.execute("PRAGMA cipher_page_size = 4096;")
+    cursor.execute("PRAGMA kdf_iter = 256000;")
 
     try:
         cursor.execute("SELECT count(*) FROM sqlite_master;")
