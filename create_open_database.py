@@ -4,10 +4,13 @@ import random
 import string
 import sqlcipher3
 
+path = os.path.expanduser("~/Documents/Passwords")
+db_path = os.path.join(path, "test.db")
 
-DB_PATH = "secure.db"
+print("Documents directory is:", path)
 
-
+if not os.path.exists(path):
+    os.makedirs(path)
 
 def derive_key(password: str, salt: bytes) -> str:
     key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 256000)
@@ -63,7 +66,7 @@ def open_encrypted_database(db_path: str, password: str):
         raise ValueError("Invalid password")
 
 
-def get_connection(db_password: str, db_path: str = DB_PATH):
+def get_connection(db_password: str, db_path: str = db_path):
     if not os.path.exists(db_path):
         return create_encrypted_database(db_path, db_password)
     else:
