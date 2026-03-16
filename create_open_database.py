@@ -4,13 +4,9 @@ import random
 import string
 import sqlcipher3
 
-path = os.path.expanduser("~/Documents/Passwords")
-db_path = os.path.join(path, "test.db")
 
-print("Documents directory is:", path)
+db_path = "secure.db"
 
-if not os.path.exists(path):
-    os.makedirs(path)
 
 def derive_key(password: str, salt: bytes) -> str:
     key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 256000)
@@ -34,6 +30,7 @@ def create_encrypted_database(db_path: str, password: str, table_name: str = "us
     cursor.execute(f"""
         CREATE TABLE IF NOT EXISTS {table_name} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            website TEXT NOT NULL,
             username TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
@@ -73,24 +70,23 @@ def get_connection(db_password: str, db_path: str = db_path):
         return open_encrypted_database(db_path, db_password)
 
 
-
 def generate_password(length: int = 12) -> str:
     chars = string.ascii_letters + string.digits + "!@#$%^&*()_+-="
     return ''.join(random.choice(chars) for _ in range(length))
 
 
-def save_password(conn, website: str, email: str, password: str) -> None:
+def save_password(conn, website: str, username: str, email: str, password: str) -> None:
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-        (website, email, password)
+        "INSERT INTO users (website, username, email, password) VALUES (?, ?, ?, ?)",
+        (website, username, email, password)
     )
     conn.commit()
 
 
 def fetch_all_passwords(conn) -> list[tuple]:
     cursor = conn.cursor()
-    cursor.execute("SELECT username, email, password, created_at FROM users")
+    cursor.execute("SELECT website, username, email, password, created_at FROM users")
     return cursor.fetchall()
 
 
