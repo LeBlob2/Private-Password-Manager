@@ -4,7 +4,7 @@ This is our project repository for Private Password Manager and includes all the
 As of now there is no executable on windows so you would have to run it in an IDE or Terminal
 
 ### Showcase / Screenshot
-/showcase.png
+/assets/images/showcase.png
 
 ### Linux
 set the shell script run.sh to executable and run it
@@ -21,8 +21,4 @@ make an executable like an exe
 Go to your IDE open the main.py file and run from there
 
 ### Terminal 
-<<<<<<< HEAD
 cd to where all 3 files are stored and run "python main.py"
-=======
-cd to where all 3 files are stored and run "python main.py"
->>>>>>> a8f4d06cdb7f27e72885cb6375caba1ba42ae434
