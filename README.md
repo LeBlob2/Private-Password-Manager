@@ -1,2 +1,2 @@
-#**Private Password Manager**
+#Private Password Manager
 
