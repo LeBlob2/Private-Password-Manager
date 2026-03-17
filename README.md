@@ -7,12 +7,12 @@ As of now there is no executable on windows so you would have to run it in an ID
 set the shell script run.sh to executable and run it
 
 ### Todo
-Create browser integration
-allow uses to change database password
-maybe make it look better
-maybe allow users to add notes
-maybe allow multiple database files
-make an executable like an exe
+Create browser integration  
+allow uses to change database password  
+maybe make it look better  
+maybe allow users to add notes  
+maybe allow multiple database files  
+make an executable like an exe  
 
 ### IDE
 Go to your IDE open the main.py file and run from there
