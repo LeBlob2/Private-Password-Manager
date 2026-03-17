@@ -21,4 +21,8 @@ make an executable like an exe
 Go to your IDE open the main.py file and run from there
 
 ### Terminal 
+<<<<<<< HEAD
 cd to where all 3 files are stored and run "python main.py"
+=======
+cd to where all 3 files are stored and run "python main.py"
+>>>>>>> a8f4d06cdb7f27e72885cb6375caba1ba42ae434
