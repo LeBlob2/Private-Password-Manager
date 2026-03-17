@@ -8,7 +8,7 @@ set the shell script run.sh to executable and run it
 
 ### Todo
 Create browser integration  
-allow uses to change database password  
+allow users to change database password  
 maybe make it look better  
 maybe allow users to add notes  
 maybe allow multiple database files  
@@ -18,4 +18,4 @@ make an executable like an exe
 Go to your IDE open the main.py file and run from there
 
 ### Terminal 
-cd to where all 3 files are stored and run python and in python shell run main.py
+cd to where all 3 files are stored and run "python main.py"
