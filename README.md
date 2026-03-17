@@ -1,11 +1,12 @@
 # Private Password Manager
 
 This is our project repository for Private Password Manager and includes all the code needed to run the ~~prototype~~ software.  
-As of now there is no executable on windows so you would have to run it in an [IDE](###IDE) or [Terminal](###Terminal).
+As of now there is no executable on windows so you would have to run it in an IDE or Terminal
 
-## Linux
+### Linux
 set the shell script run.sh to executable and run it
-## Todo
+
+### Todo
 Create browser integration
 allow uses to change database password
 maybe make it look better
