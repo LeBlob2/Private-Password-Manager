@@ -6,7 +6,7 @@ import sqlcipher3
 
 #This is for the path to the document folder not sure if this works on windows
 path = os.path.expanduser("~/Documents/Passwords")
-db_path = os.path.join(path, "test.db")
+db_path = os.path.join(path, "Passwords.db")
 
 print("Documents directory is:", path)
 
