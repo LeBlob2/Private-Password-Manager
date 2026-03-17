@@ -3,8 +3,9 @@
 This is our project repository for Private Password Manager and includes all the code needed to run the ~~prototype~~ software.  
 As of now there is no executable on windows so you would have to run it in an IDE or Terminal
 
-### Showcase / Screenshot
-/assets/images/showcase.png
+### Screenshot
+<img width="1920" height="1080" alt="Showcase" src="assets/images/showcase.png" />
+
 
 ### Linux
 set the shell script run.sh to executable and run it
