@@ -4,21 +4,33 @@ import random
 import string
 import sqlcipher3
 
-#This is for the path to the document folder not sure if this works on windows
-path = os.path.expanduser("~/Documents/Passwords")
-db_path = os.path.join(path, "Passwords.db")
+# base directory for all databases
+db_path = os.path.expanduser("~/Documents/Passwords")
 
-print("Documents directory is:", path)
+if not os.path.exists(db_path):
+    os.makedirs(db_path)
 
-if not os.path.exists(path):
-    os.makedirs(path)
 
-#this converts the password to a hash because of course we need to do that
+def list_databases() -> list[str]:
+    """Return all .db filenames (without extension) found in db_path."""
+    return [
+        f[:-3] for f in os.listdir(db_path)
+        if f.endswith(".db") and os.path.exists(os.path.join(db_path, f + ".salt"))
+    ]
+
+
+def resolve_db_path(db_name: str) -> str:
+    """Convert a database name to its full path."""
+    return os.path.join(db_path, db_name + ".db")
+
+
+# this converts the password to a hash because of course we need to do that
 def derive_key(password: str, salt: bytes) -> str:
     key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 256000)
     return key.hex()
 
-#salt for the hash and as the name says there
+
+# salt for the hash and as the name says there
 def create_encrypted_database(db_path: str, password: str, table_name: str = "users"):
     salt = os.urandom(32)
     salt_path = db_path + '.salt'
@@ -47,7 +59,7 @@ def create_encrypted_database(db_path: str, password: str, table_name: str = "us
     conn.commit()
     return conn
 
-#the function names are there you can read what they do
+
 def open_encrypted_database(db_path: str, password: str):
     salt_path = db_path + '.salt'
     with open(salt_path, 'rb') as f:
@@ -68,15 +80,15 @@ def open_encrypted_database(db_path: str, password: str):
         conn.close()
         raise ValueError("That is not your password dumbass.")
 
-#checks if database already exists or not should have custom text for this but i cant be bothered
-def get_connection(db_password: str, db_path: str = db_path):
+
+def get_connection(db_password: str, db_path: str):
     if not os.path.exists(db_path):
         return create_encrypted_database(db_path, db_password)
     else:
         return open_encrypted_database(db_path, db_password)
 
-#change the int value for longer password, since most websites go to 32 max you can set it to that but 16 is the default
-def generate_password(length: int = 32) -> str:
+
+def generate_password(length: int = 16) -> str:
     chars = string.ascii_letters + string.digits + "!@#$%^&*()_+-="
     return ''.join(random.choice(chars) for _ in range(length))
 
@@ -96,21 +108,21 @@ def fetch_all_passwords(conn) -> list[tuple]:
     return cursor.fetchall()
 
 
-def delete_entry(conn, entry_id: int) -> bool:
+def delete_password_by_id(conn, entry_id: int) -> bool:
     cursor = conn.cursor()
     cursor.execute("DELETE FROM users WHERE id = ?", (entry_id,))
     conn.commit()
     if cursor.rowcount == 0:
         return False
 
-    #sets the id to be in order after an entry is deleted very cheap hack i know
+    # makes sure ID is always ordered 1,2,3 after deletion
     cursor.execute("SELECT id FROM users ORDER BY id")
     rows = cursor.fetchall()
     for new_id, (old_id,) in enumerate(rows, start=1):
         if new_id != old_id:
             cursor.execute("UPDATE users SET id = ? WHERE id = ?", (new_id, old_id))
 
-    #sets the id back to one after deletion and increments by current entries already in it
+    # reset the counter to 1 after deletion
     cursor.execute("DELETE FROM sqlite_sequence WHERE name = 'users'")
     cursor.execute("SELECT MAX(id) FROM users")
     max_id = cursor.fetchone()[0] or 0
@@ -128,3 +140,25 @@ def update_password(conn, email: str, new_password: str) -> None:
         (new_password, email)
     )
     conn.commit()
+
+
+def change_master_password(db_path: str, current_password: str, new_password: str) -> None:
+    """
+    Re-encrypts the database with a new master password.
+    Generates a fresh salt, derives a new key, and uses SQLCipher's
+    PRAGMA rekey to reencrypt in place, then overwrites the salt file.
+    Raises ValueError if the current password is wrong.
+    """
+    conn = open_encrypted_database(db_path, current_password)
+
+    new_salt = os.urandom(32)
+    new_key = derive_key(new_password, new_salt)
+
+    cursor = conn.cursor()
+    cursor.execute(f"PRAGMA rekey = \"x'{new_key}'\";")
+    conn.commit()
+    conn.close()
+
+    salt_path = db_path + '.salt'
+    with open(salt_path, 'wb') as f:
+        f.write(new_salt)
