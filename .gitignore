@@ -1,4 +1,5 @@
 .venv
 __pycache__
-Password Manager Release Unix
-PasswordManagerUnix.7z
+build
+dist
+Private_Password_Manager.spec
