@@ -8,7 +8,7 @@ As of now there is no executable on windows so you would have to run it in an ID
 
 
 ### Linux
-set the shell script run.sh to executable and run it
+set the shell script run.sh to executable and run it (python is needed obviously as well as tkinter and sqlcipher3)
 
 ### Todo
 Create browser integration  
