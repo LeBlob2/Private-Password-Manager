@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "Private Password Manager",
+  "version": "1.0",
+  "description": "Read-only viewer for your local password database.",
+  "permissions": [
+    "http://localhost:5000/*"
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Private Password Manager"
+  }
+}

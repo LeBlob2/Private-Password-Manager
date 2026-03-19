@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+  <!-- Login screen -->
+  <div id="screen-login">
+    <h2>Password Manager</h2>
+
+    <label>Database</label>
+    <select id="db-select"></select>
+
+    <label>Master Password</label>
+    <input type="password" id="input-password" placeholder="Enter master password" />
+
+    <button id="btn-unlock">Unlock</button>
+    <p id="login-error" class="error"></p>
+  </div>
+
+  <!-- Entries screen -->
+  <div id="screen-entries" class="hidden">
+    <div id="entries-header">
+      <span id="db-label"></span>
+      <button id="btn-lock">Lock</button>
+    </div>
+
+    <input type="text" id="input-search" placeholder="Search website, username or email…" />
+
+    <div id="entries-list"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
