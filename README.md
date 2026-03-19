@@ -1,25 +1,7 @@
 # Private Password Manager
 
 This is our project repository for Private Password Manager and includes all the code needed to run the ~~prototype~~ software.  
-As of now there is no executable on windows so you would have to run it in an IDE or Terminal
+Install the binaries from releases and run it. On windows change .bin to .exe (not sure if that is needed)
 
 ### Screenshot
 <img width="1920" height="1080" alt="Showcase" src="assets/images/showcase.png" />
-
-
-### Linux
-set the shell script run.sh to executable and run it (python is needed obviously as well as tkinter and sqlcipher3)
-
-### Todo
-Create browser integration  
-allow users to change database password  
-maybe make it look better  
-maybe allow users to add notes  
-maybe allow multiple database files  
-make an executable like an exe  
-
-### IDE
-Go to your IDE open the main.py file and run from there
-
-### Terminal 
-cd to where all 3 files are stored and run "python main.py"
