@@ -76,8 +76,6 @@ button {
 
 .hidden { display: none !important; }
 
-/* ── Entries screen ── */
-
 #entries-header {
   display: flex;
   align-items: center;
