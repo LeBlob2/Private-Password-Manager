@@ -2,12 +2,19 @@
   "manifest_version": 2,
   "name": "Private Password Manager",
   "version": "1.0",
-  "description": "Im not really sure what to put here",
+  "description": "Oppa Gangnam Style",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "private-password-manager@local",
+      "strict_min_version": "78.0"
+    }
+  },
   "permissions": [
     "http://localhost:5000/*"
   ],
   "browser_action": {
     "default_popup": "manager.html",
-    "default_title": "Private Password Manager"
+    "default_title": "Private Password Manager",
+    "browser_style": true
   }
 }

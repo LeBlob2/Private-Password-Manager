@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Private Password Manager",
+  "version": "1.0",
+  "description": "Oppa Gangnam Style",
+  "host_permissions": [
+    "http://localhost:5000/*"
+  ],
+  "browser_action": {
+    "default_popup": "manager.html",
+    "default_title": "Private Password Manager"
+  }
+}
