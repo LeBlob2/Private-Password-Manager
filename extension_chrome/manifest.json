@@ -8,7 +8,7 @@
     "http://localhost:5000/*"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "manager.html",
     "default_title": "Private Password Manager"
   }
 }
