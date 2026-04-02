@@ -2,12 +2,13 @@
   "manifest_version": 3,
   "name": "Private Password Manager",
   "version": "1.0",
-  "description": "Oppa Gangnam Style",
+  "description": "Read-only viewer for your local encrypted password database.",
+  "permissions": [],
   "host_permissions": [
     "http://localhost:5000/*"
   ],
-  "browser_action": {
-    "default_popup": "manager.html",
+  "action": {
+    "default_popup": "popup.html",
     "default_title": "Private Password Manager"
   }
 }

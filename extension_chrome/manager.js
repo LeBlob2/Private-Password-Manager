@@ -11,50 +11,20 @@ const btnLock       = document.getElementById("btn-lock");
 const inputSearch   = document.getElementById("input-search");
 const entriesList   = document.getElementById("entries-list");
 
-let currentDb  = null;
-let allEntries = [];
-
-function saveSession(db_name) {
-  sessionStorage.setItem("unlocked_db", db_name);
-}
-
-function clearSession() {
-  sessionStorage.removeItem("unlocked_db");
-}
-
-function getSavedSession() {
-  return sessionStorage.getItem("unlocked_db");
-}
-
+let currentDb   = null;
+let allEntries  = [];
 
 async function init() {
   try {
-    const res = await fetch(`${API}/databases`);
-    const dbs = await res.json();
+    const res  = await fetch(`${API}/databases`);
+    const dbs  = await res.json();
     dbSelect.innerHTML = dbs.length
       ? dbs.map(d => `<option value="${d}">${d}</option>`).join("")
       : `<option disabled>No databases found</option>`;
   } catch {
     loginError.textContent = "Cannot reach API — is api.py running?";
     btnUnlock.disabled = true;
-    return;
   }
-
-  const saved = getSavedSession();
-  if (saved) {
-    const res = await fetch(`${API}/fetch?db_name=${encodeURIComponent(saved)}`);
-    if (res.ok) {
-      currentDb  = saved;
-      allEntries = await res.json();
-      dbLabel.textContent = currentDb;
-      renderEntries(allEntries);
-      showScreen("entries");
-      return;
-    }
-    clearSession();
-  }
-
-  showScreen("login");
 }
 
 btnUnlock.addEventListener("click", async () => {
@@ -65,7 +35,7 @@ btnUnlock.addEventListener("click", async () => {
   if (!password) { loginError.textContent = "Enter your master password."; return; }
 
   try {
-    const res  = await fetch(`${API}/unlock`, {
+    const res = await fetch(`${API}/unlock`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({ db_name, password })
@@ -75,7 +45,6 @@ btnUnlock.addEventListener("click", async () => {
     if (!res.ok) { loginError.textContent = data.error || "Wrong password."; return; }
 
     currentDb = db_name;
-    saveSession(db_name);
     inputPassword.value = "";
     await loadEntries();
     showScreen("entries");
@@ -87,8 +56,8 @@ btnUnlock.addEventListener("click", async () => {
 inputPassword.addEventListener("keydown", e => { if (e.key === "Enter") btnUnlock.click(); });
 
 async function loadEntries() {
-  const res  = await fetch(`${API}/fetch?db_name=${encodeURIComponent(currentDb)}`);
-  allEntries = await res.json();
+  const res    = await fetch(`${API}/fetch?db_name=${encodeURIComponent(currentDb)}`);
+  allEntries   = await res.json();
   dbLabel.textContent = currentDb;
   renderEntries(allEntries);
 }
@@ -105,13 +74,13 @@ function renderEntries(entries) {
 
       <div class="entry-row">
         <span class="entry-key">Username</span>
-        <span class="entry-val">${esc(e.username)}</span>
+        <span class="entry-val" id="u-${i}">${esc(e.username)}</span>
         <button class="btn-copy" data-val="${esc(e.username)}">Copy</button>
       </div>
 
       <div class="entry-row">
         <span class="entry-key">Email</span>
-        <span class="entry-val">${esc(e.email)}</span>
+        <span class="entry-val" id="em-${i}">${esc(e.email)}</span>
         <button class="btn-copy" data-val="${esc(e.email)}">Copy</button>
       </div>
 
@@ -137,9 +106,9 @@ function renderEntries(entries) {
     btn.addEventListener("click", () => {
       const span  = document.getElementById(btn.dataset.target);
       const shown = btn.textContent === "Hide";
-      span.textContent = shown ? "••••••••" : span.dataset.plain;
+      span.textContent  = shown ? "••••••••" : span.dataset.plain;
       span.classList.toggle("masked", shown);
-      btn.textContent  = shown ? "Show" : "Hide";
+      btn.textContent   = shown ? "Show" : "Hide";
     });
   });
 }
@@ -161,7 +130,6 @@ btnLock.addEventListener("click", async () => {
     headers: { "Content-Type": "application/json" },
     body:    JSON.stringify({ db_name: currentDb })
   });
-  clearSession();
   currentDb  = null;
   allEntries = [];
   entriesList.innerHTML = "";
