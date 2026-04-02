@@ -14,8 +14,6 @@ const entriesList   = document.getElementById("entries-list");
 let currentDb   = null;
 let allEntries  = [];
 
-// ── Startup ──────────────────────────────────────────────────────────────────
-
 async function init() {
   try {
     const res  = await fetch(`${API}/databases`);
@@ -28,8 +26,6 @@ async function init() {
     btnUnlock.disabled = true;
   }
 }
-
-// ── Login ─────────────────────────────────────────────────────────────────────
 
 btnUnlock.addEventListener("click", async () => {
   loginError.textContent = "";
@@ -58,8 +54,6 @@ btnUnlock.addEventListener("click", async () => {
 });
 
 inputPassword.addEventListener("keydown", e => { if (e.key === "Enter") btnUnlock.click(); });
-
-// ── Entries ───────────────────────────────────────────────────────────────────
 
 async function loadEntries() {
   const res    = await fetch(`${API}/fetch?db_name=${encodeURIComponent(currentDb)}`);
@@ -99,7 +93,6 @@ function renderEntries(entries) {
     </div>
   `).join("");
 
-  // Copy buttons
   entriesList.querySelectorAll(".btn-copy").forEach(btn => {
     btn.addEventListener("click", () => {
       navigator.clipboard.writeText(btn.dataset.val);
@@ -109,7 +102,6 @@ function renderEntries(entries) {
     });
   });
 
-  // Show/hide password toggle
   entriesList.querySelectorAll(".btn-toggle").forEach(btn => {
     btn.addEventListener("click", () => {
       const span  = document.getElementById(btn.dataset.target);
@@ -121,8 +113,6 @@ function renderEntries(entries) {
   });
 }
 
-// ── Search ────────────────────────────────────────────────────────────────────
-
 inputSearch.addEventListener("input", () => {
   const q = inputSearch.value.toLowerCase();
   renderEntries(
@@ -133,8 +123,6 @@ inputSearch.addEventListener("input", () => {
     )
   );
 });
-
-// ── Lock ──────────────────────────────────────────────────────────────────────
 
 btnLock.addEventListener("click", async () => {
   await fetch(`${API}/lock`, {
@@ -148,8 +136,6 @@ btnLock.addEventListener("click", async () => {
   inputSearch.value     = "";
   showScreen("login");
 });
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function showScreen(name) {
   screenLogin.classList.toggle("hidden",   name !== "login");

@@ -4,3 +4,5 @@ build
 dist
 Private_Password_Manager.spec
 Run_API.spec
+extension.zip
+extension.xpi
